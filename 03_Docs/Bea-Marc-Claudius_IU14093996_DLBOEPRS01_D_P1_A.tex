@@ -1,0 +1,158 @@
+\documentclass[12pt, a4paper]{article}
+
+% --- Formale Einstellungen (Schrift, Abstand, Ränder) ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{geometry}
+\geometry{a4paper, left=2cm, right=2cm, top=2cm, bottom=2cm}
+
+% Schriftart Helvetica (Arial-Klon) als Standard setzen
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% Behebt "Overfull \hbox" (perfektionierter Blocksatz ohne Überstehen am Rand)
+\usepackage{microtype} 
+
+% Zeilenabstand auf 1,5 setzen
+\usepackage{setspace}
+\onehalfspacing
+
+% Unterdrückt die Einrückung bei neuen Absätzen und optimiert Abstände
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+% --- Wichtige Pakete für die Grafiken ---
+\usepackage{tikz}
+\usetikzlibrary{shapes.multipart, shapes.geometric, arrows.meta, positioning}
+
+\begin{document}
+
+% ==========================================
+% TITEL & EINLEITUNG
+% ==========================================
+\begin{center}
+    \Large\textbf{Phase 1 Konzeptphase: Arduino-Kalkulator} \\
+    \vspace{0.3cm}
+    \normalsize Architektur und Systemdesign
+\end{center}
+\vspace{0.5cm}
+
+Dieses Dokument beschreibt die Architektur und das Systemdesign für den Arduino Kalkulator. Der Fokus liegt auf einer praxisnahen Problemlösung, die typische Arbeitsweisen aus der professionellen Softwareentwicklung nutzt.
+
+\vspace{0.3cm}
+\textbf{Systemlandschaft und Toolchain} \\
+Als Entwicklungsumgebung kommt Visual Studio Code zum Einsatz. Der große Vorteil dabei ist, dass alle nötigen Werkzeuge in einer einzigen Oberfläche vereint sind. Statt zwischen verschiedenen Programmen zu wechseln, werden die Versionskontrolle (Git), die Dokumentation (LaTeX), die PC-Anwendung (C++) und die Mikrocontroller-Programmierung (C über PlatformIO) in einem gemeinsamen Workflow gebündelt.
+
+\vspace{0.3cm}
+\textbf{Sprachwahl und Paradigmen} \\
+Für die PC-Benutzeroberfläche (UI) fiel die Entscheidung auf C++. Die objektorientierte Programmierung ist der aktuelle Standard für UI-Anwendungen und sorgt für eine saubere Trennung der einzelnen Bausteine. Wer C++ beherrscht, findet sich zudem schnell in C ein. Auf dem D1 Mini (ESP8266) wird hingegen C genutzt, um eine hardwarenahe, ressourcenschonende und klare Schritt-für-Schritt-Verarbeitung (prozedural) der Daten zu erreichen.
+
+\vspace{0.5cm}
+% ==========================================
+% TEIL 1: KLASSENDIAGRAMM (PC / C++)
+% ==========================================
+\textbf{1. Architektur der PC-Anwendung (C++)}
+
+Die PC-Software ist in zwei Hauptbereiche unterteilt, um die grafische Oberfläche (UI) strikt von der Hardwarekommunikation zu trennen. Die Klasse \texttt{CalculatorUI} kümmert sich um die Eingaben. Jeder Tastendruck wird über die Methode \texttt{addButton(char)} erfasst und mithilfe der sicheren C++ Standardbibliothek (z. B. \texttt{std::string}) an den aktuellen Rechenterm angehängt.
+
+Um zu verhindern, dass der Mikrocontroller mit Daten überlastet wird oder fehlerhafte Doppelsendungen entstehen, gibt es eine Eingabesperre: Sobald der Term mit \texttt{sendExpression()} abgeschickt wird, wechselt der Status \texttt{isCalculating} auf \texttt{true}. Die Eingabe wird gesperrt und signalisiert dem Nutzer, dass gerade gerechnet wird. Erst wenn das Ergebnis über \texttt{receiveResult(String)} ankommt, wird die UI wieder freigegeben.
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[
+  umlclass/.style={
+    draw=black,
+    thick,
+    rectangle split,
+    rectangle split parts=3,
+    rectangle split part fill={gray!20, white, white},
+    align=left,
+    font=\sffamily\small
+  }
+]
+
+\node[umlclass] (UI) {
+  \textbf{\hfil CalculatorUI \hfil}
+  \nodepart{two}
+  - currentExpression: String\\
+  - calculatedResult: String\\
+  - isCalculating: boolean
+  \nodepart{three}
+  + addButton(char): void\\
+  + buttonClear(): void\\
+  + sendExpression(): void\\
+  + receiveResult(String): void
+};
+
+\node[umlclass, right=1.5cm of UI] (Comm) {
+  \textbf{\hfil ArduinoCommunication \hfil}
+  \nodepart{two}
+  - portName: String\\
+  - baudRate: int
+  \nodepart{three}
+  + connect(): boolean\\
+  + sendData(String): void\\
+  + readData(): String
+};
+
+\draw[->, >=stealth, thick] (UI.east) -- node[above, font=\sffamily\footnotesize] {nutzt} (Comm.west);
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+
+% ==========================================
+% TEIL 2: PROGRAMMABLAUFPLAN (ARDUINO / C)
+% ==========================================
+\textbf{2. Logik des Mikrocontrollers (C)}
+
+Der C-Code auf dem Arduino arbeitet den Ablauf klassisch von oben nach unten ab. Da über das USB-Kabel nur einfacher Text (ASCII) geschickt wird, muss der Arduino die ankommenden Daten sicher zwischenspeichern. Ein spezielles Zeichen (z. B. \texttt{\textbackslash n}) markiert das Ende der Nachricht und startet die Auswertung.
+
+Der Prozessschritt 'Term parsen \& berechnen' ist der Kern der Firmware. Hierbei wird der Text zuerst in einzelne Zahlen und Rechenzeichen zerlegt. Für die Beachtung der Punkt-vor-Strich-Regel und der Klammern wird ein strukturierter Lösungsansatz genutzt. Da C keine bequemen String-Funktionen wie C++ hat, werden die Textbausteine mit Standard-C-Befehlen in echte Zahlen umgewandelt.
+
+Um genaue Ergebnisse zu erhalten, rechnet der Arduino intern mit Fließkommazahlen (\texttt{float}). Ein kritischer Fehler – die Division durch Null – wird dabei aktiv abgefangen: Vor jeder Division prüft das Programm den Teiler. Ist dieser Null, bricht der Arduino ab und sendet den Fehler 'Math Error'. Normale Ergebnisse werden auf zwei Nachkommastellen gerundet und als Text an den PC zurückgeschickt.
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[
+    scale=0.75, every node/.style={transform shape},
+    startstop/.style = {rectangle, rounded corners, minimum width=3.5cm, minimum height=0.8cm, text centered, draw=black, fill=gray!20, font=\sffamily},
+    process/.style = {rectangle, minimum width=3.5cm, minimum height=0.8cm, text centered, draw=black, fill=white, font=\sffamily},
+    decision/.style = {diamond, aspect=2.5, minimum width=3.5cm, minimum height=0.8cm, text centered, draw=black, fill=white, font=\sffamily\small},
+    arrow/.style = {thick, ->, >=stealth}
+]
+
+\node (start) [startstop] {Initialisierung (Serial Port)};
+\node (avail) [decision, below=0.6cm of start] {Daten verfügbar?};
+\node (read) [process, below=0.6cm of avail] {String einlesen};
+\node (parse) [process, below=0.6cm of read] {Term parsen \& berechnen};
+\node (divzero) [decision, below=0.6cm of parse] {Division durch 0?};
+\node (err) [process, right=1.2cm of divzero] {Sende 'Math Error'};
+\node (res) [process, below=0.6cm of divzero] {Sende gerundetes Ergebnis};
+
+\draw [arrow] (start) -- (avail);
+\draw [arrow] (avail) -- node[anchor=east, font=\sffamily\small] {Ja} (read);
+\draw [arrow] (read) -- (parse);
+\draw [arrow] (parse) -- (divzero);
+\draw [arrow] (divzero) -- node[anchor=south, font=\sffamily\small] {Ja} (err);
+\draw [arrow] (divzero) -- node[anchor=east, font=\sffamily\small] {Nein} (res);
+\draw [arrow] (avail.east) -- node[anchor=south, font=\sffamily\small] {Nein} ++(1.5,0) |- (avail.north);
+
+\coordinate (returnPoint) at ([yshift=-0.4cm]res.south);
+\draw [thick] (res.south) -- (returnPoint);
+\draw [thick] (err.south) |- (returnPoint);
+\draw [arrow] (returnPoint) -| ([xshift=-1.5cm]read.west) |- (avail.west);
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+% ==========================================
+% KI-KONZEPT
+% ==========================================
+\textbf{KI-Konzept} \\
+In dieser Projektarbeit werden Large Language Models (LLMs) als interaktive Hilfsmittel eingesetzt. Das Ziel ist ein effizienteres Arbeiten und ein schneller Wissensaufbau – ähnlich wie bei einem 'Sparringspartner' in der Softwareentwicklung. Die KI hilft dabei, Konzepte zu diskutieren sowie Standard-Code und aufwendige LaTeX-Formatierungen (wie die Diagramme) zeitsparend zu erstellen. Die eigentlichen Entscheidungen zur Architektur, die Verknüpfung der Logik und die kritische Prüfung des Codes liegen aber jederzeit beim Autor. Die KI agiert ausschließlich reaktiv auf konkrete und fachliche Anweisungen.
+
+\end{document}

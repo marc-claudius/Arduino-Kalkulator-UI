@@ -1,0 +1,43 @@
+Detecting compiler hash for triplet x64-windows...
+Compiler found: C:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools/VC/Tools/MSVC/14.50.35717/bin/Hostx64/x64/cl.exe
+The following packages will be built and installed:
+    glfw3:x64-windows@3.4#1
+    imgui[core,glfw-binding,opengl3-binding]:x64-windows@1.92.6
+  * vcpkg-cmake:x64-windows@2024-04-23
+  * vcpkg-cmake-config:x64-windows@2024-05-23
+Additional packages (*) will be modified to complete this operation.
+Restored 4 package(s) from C:\Users\Marc Bea\AppData\Local\vcpkg\archives in 640 ms. Use --debug to see more details.
+Installing 1/4 vcpkg-cmake-config:x64-windows@2024-05-23...
+vcpkg-cmake-config:x64-windows@2024-05-23 package ABI: 487a19f08fa2168691189bd7ac0bdb1c8eb5161ee5c14d0aeb20ab3022e284fa
+Elapsed time to handle vcpkg-cmake-config:x64-windows: 9.22 ms
+Installing 2/4 vcpkg-cmake:x64-windows@2024-04-23...
+vcpkg-cmake:x64-windows@2024-04-23 package ABI: 192d20520dfdc24fbc17ce67f246319dfdc630cefbbc2a722d4dd2fcce0c63c9
+Elapsed time to handle vcpkg-cmake:x64-windows: 15.1 ms
+Installing 3/4 glfw3:x64-windows@3.4#1...
+glfw3:x64-windows@3.4#1 package ABI: 6b878f304fe7c35caf8753dcc8588d3d5d20709851aa3bb0773c5a1cb1b92bda
+Elapsed time to handle glfw3:x64-windows: 23.7 ms
+Installing 4/4 imgui[core,glfw-binding,opengl3-binding]:x64-windows@1.92.6...
+imgui[core,glfw-binding,opengl3-binding]:x64-windows@1.92.6 package ABI: b13909f941391d85c2a216ebd136c69f1d275b29057d26a4be8afccdd406a669
+Elapsed time to handle imgui:x64-windows: 28.1 ms
+Installed contents are licensed to you by owners. Microsoft is not responsible for, nor does it grant any licenses to, third-party packages.
+Packages installed in this vcpkg installation declare the following licenses:
+MIT
+Zlib
+glfw3 provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(glfw3 CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE glfw)
+
+glfw3 provides pkg-config modules:
+
+  # A multi-platform library for OpenGL, window and input
+  glfw3
+
+imgui provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(imgui CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE imgui::imgui)
+
+All requested installations completed successfully in: 182 ms

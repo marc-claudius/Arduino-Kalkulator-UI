@@ -1,0 +1,10 @@
+^C:\C++\CALCULATOR_PROJEKT\BUILD\CMAKEFILES\2486275F08CEFA50D5C1CA0A9B0F9914\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/C++/Calculator_Projekt/02_Calculator_UI -BC:/C++/Calculator_Projekt/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/C++/Calculator_Projekt/build/ArduinoKalkulatorUI.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

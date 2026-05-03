@@ -7,9 +7,15 @@
     <ClCompile Include="C:\C++\Calculator_Projekt\02_Calculator_UI\CalculatorUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\C++\Calculator_Projekt\02_Calculator_UI\SerialPort.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\C++\Calculator_Projekt\02_Calculator_UI\CalculatorUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\C++\Calculator_Projekt\02_Calculator_UI\SerialPort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

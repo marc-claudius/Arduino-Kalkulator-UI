@@ -4,6 +4,9 @@
 #include <GLFW/glfw3.h>
 #include "CalculatorUI.h"
 #include <iostream>
+#include <windows.h>
+#include <string>
+#include <iostream>
 
 int main() {
     // 1. GLFW initialisieren, dieser Erstellt das Fenster für das UI
@@ -40,6 +43,7 @@ int main() {
 
     // 4. Unsere eigene UI-Klasse Erschaffen
     CalculatorUI myUI;
+    myUI.espPort.connect("COM3");
 
     // 5. Die Hauptschleife (Laeuft so lange, wie das Fenster offen ist)
     while (!glfwWindowShouldClose(window)) {

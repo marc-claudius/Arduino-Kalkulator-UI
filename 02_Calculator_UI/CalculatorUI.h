@@ -1,5 +1,6 @@
 //Dieses Dokument ist die Header-Datei, das Inhaltsverzeichnis als abbild des UML-Diagrammes. 
 #pragma once
+#include "SerialPort.h"
 #include <string>
 
 class CalculatorUI {
@@ -11,6 +12,8 @@ private:
     bool isCalculating;
 
 public:
+    SerialPort espPort;
+    
     // Konstruktor (wird beim Start aufgerufen), die Oberfläche wird erstellt
     CalculatorUI(); 
     

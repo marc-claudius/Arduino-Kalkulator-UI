@@ -64,7 +64,9 @@ if (ImGui::Button(",", ImVec2(70, 70))){
 ImGui::PopStyleColor(2);
 ImGui::SameLine();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(220, 100, 0, 255));
-ImGui::Button("=", ImVec2(70, 70));
+if (ImGui::Button("=", ImVec2(70, 70))){
+    espPort.sendString(currentExpression);
+}
 ImGui::PopStyleColor();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(60, 60, 60, 255));
 if (ImGui::Button("7", ImVec2(70, 70))){
@@ -146,6 +148,13 @@ if (ImGui::Button("+", ImVec2(70, 70))){
 ImGui::PopStyleColor();
 ImGui::PopStyleVar(2);
 ImGui::End(); // Schließt das Fenster wieder
+// Wir fragen kurz den Postboten, ob ein Paket (Ergebnis) vom ESP ankam
+    std::string antwort = espPort.readString();
+    
+    if (antwort != "") {
+        // Wenn ja, überschreiben wir das Display mit dem Ergebnis!
+        currentExpression = antwort;
+    }
 }
 
 // Einen Buchstaben zum Term hinzufuegen

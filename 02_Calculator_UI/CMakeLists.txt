@@ -21,6 +21,8 @@ set(SOURCES
     main.cpp
     CalculatorUI.cpp
     CalculatorUI.h
+    SerialPort.cpp
+    SerialPort.h
 )
 
 # Wir erstellen die ausführende .exe Datei

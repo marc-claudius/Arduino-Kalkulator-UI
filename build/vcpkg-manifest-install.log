@@ -22,4 +22,4 @@ imgui provides CMake targets:
   find_package(imgui CONFIG REQUIRED)
   target_link_libraries(main PRIVATE imgui::imgui)
 
-All requested installations completed successfully in: 980 us
+All requested installations completed successfully in: 3.55 ms

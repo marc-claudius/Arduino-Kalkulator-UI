@@ -16,18 +16,18 @@ CalculatorUI::~CalculatorUI() {
     std::cout << "[System] CalculatorUI zerstoert." << std::endl;
 }
 
-// Die Render-Schleife, hier wird der Aufbau des Calvulators erstellt
+// Haupt-Render-Methode, wird pro Frame aufgerufen
 void CalculatorUI::render() {
-// Definiert die Regeln für unser Fenster
 ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 
 // Wendet die Regeln an (und positioniert es fix im Hauptfenster)
 ImGui::SetNextWindowPos(ImVec2(0, 0));
+// Passende Fenstergröße wie in der main.cpp
 ImGui::SetNextWindowSize(ImVec2(400, 600)); // Passend zur Fenstergröße in der main.cpp
 ImGui::Begin("Taschenrechner", NULL, windowFlags);
 
 
-// Das Displayfenster
+// Das Dysplay wird erstellt, mit einem dunklen Hintergrund und abgerundeten Ecken.
 ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(30, 30, 30, 255)); 
 ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 15.0f); 
 ImGui::BeginChild("Display", ImVec2(300, 80), true); 
@@ -43,7 +43,7 @@ ImGui::PopStyleColor();
 ImGui::PopStyleVar();
 
 
-// Hier werden die Buttons erstellt
+// Hier werden die Buttons erstellt, mit verschiedenen Farben für Funktionstasten, Operatoren und Zahlen.
 ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 35.0f); 
 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 6));
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(160, 160, 160, 255));
@@ -148,11 +148,10 @@ if (ImGui::Button("+", ImVec2(70, 70))){
 ImGui::PopStyleColor();
 ImGui::PopStyleVar(2);
 ImGui::End(); // Schließt das Fenster wieder
-// Wir fragen kurz den Postboten, ob ein Paket (Ergebnis) vom ESP ankam
+// Asynchrone Abfrage der Hardware-Schnittstelle auf eingehende Ergebnisse
     std::string antwort = espPort.readString();
     
     if (antwort != "") {
-        // Wenn ja, überschreiben wir das Display mit dem Ergebnis!
         currentExpression = antwort;
     }
 }

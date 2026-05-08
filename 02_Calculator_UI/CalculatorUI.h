@@ -17,7 +17,7 @@ public:
     // Konstruktor (wird beim Start aufgerufen), die Oberfläche wird erstellt
     CalculatorUI(); 
     
-    // Destruktor (räumt beim Beenden auf), Oberfläche wird geschlossen
+    // Destruktor, Oberfläche wird geschlossen
     ~CalculatorUI(); 
 
     // Die neue Hauptfunktion für ImGui: Zeichnet das Fenster jeden Frame neu

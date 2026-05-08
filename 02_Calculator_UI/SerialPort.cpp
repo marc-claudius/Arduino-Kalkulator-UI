@@ -39,9 +39,9 @@ bool SerialPort::connect(const char* portName) {
 
     // Konfiguration des Lese-Timeouts. Diese Einstellungen bestimmen, wie lange die ReadFile-Funktion wartet.
     COMMTIMEOUTS timeouts = {0};
-    timeouts.ReadIntervalTimeout = 50;
-    timeouts.ReadTotalTimeoutConstant = 50;
-    timeouts.ReadTotalTimeoutMultiplier = 10;
+    timeouts.ReadIntervalTimeout = MAXDWORD;
+    timeouts.ReadTotalTimeoutConstant = 0;
+    timeouts.ReadTotalTimeoutMultiplier = 0;
     SetCommTimeouts(hSerial, &timeouts);
 
     connected_status = true;

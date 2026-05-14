@@ -58,8 +58,8 @@ if (ImGui::Button("DEL", ImVec2(70, 70))){
     }
 }
 ImGui::SameLine();
-if (ImGui::Button(",", ImVec2(70, 70))){
-    addButton(',');
+if (ImGui::Button(".", ImVec2(70, 70))){
+    addButton('.');
 }
 ImGui::PopStyleColor(2);
 ImGui::SameLine();
@@ -183,6 +183,9 @@ void CalculatorUI::sendExpression() {
 
 // Antwort vom Arduino empfangen
 void CalculatorUI::receiveResult(std::string result) {
+    while (!result.empty() && (result.back() == '\n' || result.back() == '\r')) {
+        result.pop_back();
+    }
     calculatedResult = result;
     currentExpression = result; // Ergebnis wird zum neuen Term, um weiterzurechnen
     isCalculating = false;      // Eingabe wieder freigeben

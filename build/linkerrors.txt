@@ -1,0 +1,8 @@
+================================================================================
+Linker Errors
+Generated: 2026-05-14T08:27:16.854Z
+Total Errors: 1
+================================================================================
+
+[LNK1168] (MSVC)
+"C:\C++\Calculator_Projekt\build\Debug\Kalkulator.exe" kann nicht zum Schreiben geöffnet werden. [C:\C++\Calculator_Projekt\build\Kalkulator.vcxproj]

@@ -49,7 +49,7 @@ ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 6));
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(160, 160, 160, 255));
 ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 0, 0, 255));
 if (ImGui::Button("AC", ImVec2(70, 70))){
-    currentExpression = "";
+    buttonClear();
 } 
 ImGui::SameLine();
 if (ImGui::Button("DEL", ImVec2(70, 70))){
@@ -59,100 +59,100 @@ if (ImGui::Button("DEL", ImVec2(70, 70))){
 }
 ImGui::SameLine();
 if (ImGui::Button(",", ImVec2(70, 70))){
-    currentExpression += ","; 
+    addButton(',');
 }
 ImGui::PopStyleColor(2);
 ImGui::SameLine();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(220, 100, 0, 255));
 if (ImGui::Button("=", ImVec2(70, 70))){
-    espPort.sendString(currentExpression);
+    sendExpression();
 }
 ImGui::PopStyleColor();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(60, 60, 60, 255));
 if (ImGui::Button("7", ImVec2(70, 70))){
-    currentExpression += "7"; 
+    addButton('7'); 
 }
 ImGui::SameLine();
 if (ImGui::Button("8", ImVec2(70, 70))){
-    currentExpression += "8"; 
+    addButton('8'); 
 }
 ImGui::SameLine();
 if (ImGui::Button("9", ImVec2(70, 70))){
-    currentExpression += "9"; 
+    addButton('9'); 
 }
 ImGui::PopStyleColor();
 ImGui::SameLine();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(220, 100, 0, 255));
 if (ImGui::Button("/", ImVec2(70, 70))){
-    currentExpression += "/"; 
+    addButton('/'); 
 }
 ImGui::PopStyleColor();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(60, 60, 60, 255));
 if (ImGui::Button("4", ImVec2(70, 70))){
-    currentExpression += "4"; 
+    addButton('4'); 
 }
 ImGui::SameLine();
 if (ImGui::Button("5", ImVec2(70, 70))){
-    currentExpression += "5"; 
+    addButton('5'); 
 }
 ImGui::SameLine();
 if (ImGui::Button("6", ImVec2(70, 70))){
-    currentExpression += "6"; 
+    addButton('6'); 
 }
 ImGui::PopStyleColor();
 ImGui::SameLine();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(220, 100, 0, 255));
 if (ImGui::Button("*", ImVec2(70, 70))){
-    currentExpression += "*"; 
+    addButton('*'); 
 }
 ImGui::PopStyleColor();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(60, 60, 60, 255));
 if (ImGui::Button("1", ImVec2(70, 70))){
-    currentExpression += "1"; 
+    addButton('1'); 
 }
 ImGui::SameLine();
 if (ImGui::Button("2", ImVec2(70, 70))){
-    currentExpression += "2"; 
+    addButton('2'); 
 }
 ImGui::SameLine();
 if (ImGui::Button("3", ImVec2(70, 70))){
-    currentExpression += "3"; 
+    addButton('3'); 
 }
 ImGui::PopStyleColor();
 ImGui::SameLine();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(220, 100, 0, 255));
 if (ImGui::Button("-", ImVec2(70, 70))){
-    currentExpression += "-"; 
+    addButton('-');
 }
 ImGui::PopStyleColor();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(160, 160, 160, 255));
 if (ImGui::Button("(", ImVec2(70, 70))){
-    currentExpression += "("; 
+    addButton('(');
 }
 ImGui::SameLine();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(60, 60, 60, 255));
 if (ImGui::Button("0", ImVec2(70, 70))){
-    currentExpression += "0"; 
+    addButton('0'); 
 }
 ImGui::PopStyleColor();
 ImGui::SameLine();
 if (ImGui::Button(")", ImVec2(70, 70))){
-    currentExpression += ")"; 
+    addButton(')'); 
 }
 ImGui::PopStyleColor();
 ImGui::SameLine();
 ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(220, 100, 0, 255));
 if (ImGui::Button("+", ImVec2(70, 70))){
-    currentExpression += "+"; 
+    addButton('+');
 }
 ImGui::PopStyleColor();
 ImGui::PopStyleVar(2);
 ImGui::End(); // Schließt das Fenster wieder
 // Asynchrone Abfrage der Hardware-Schnittstelle auf eingehende Ergebnisse
-    std::string antwort = espPort.readString();
+    std::string response = espPort.readString();
     
-    if (antwort != "") {
-        currentExpression = antwort;
+    if (response != "") {
+        receiveResult(response);
     }
 }
 
@@ -169,7 +169,6 @@ void CalculatorUI::buttonClear() {
     if (!isCalculating) {
         currentExpression = "";
         calculatedResult = "";
-        std::cout << "Term geloescht (AC)." << std::endl;
     }
 }
 
@@ -178,7 +177,7 @@ void CalculatorUI::sendExpression() {
     if (!currentExpression.empty() && !isCalculating) {
         isCalculating = true; // Eingabe sperren
         std::cout << "Sende an Arduino: " << currentExpression << std::endl;
-        // Hier kommt spaeter der Serial-Code rein
+        espPort.sendString(currentExpression);
     }
 }
 

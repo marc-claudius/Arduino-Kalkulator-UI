@@ -8,9 +8,15 @@
 *.toc
 *.bbl
 *.blg
+
 # C++ Build-Dateien ignorieren
-PC_App/build/
-PC_App/.vscode/
+02_Calculator_UI/build/
+02_Calculator_UI/out/
+Bau/
 
 # PlatformIO Build-Dateien ignorieren
-Arduino_Firmware/.pio/
+01_Arduino_Code/.pio/
+01_Arduino_Code/.vscode/
+
+# Allgemeine Editor-Ordner ignorieren
+.vscode/

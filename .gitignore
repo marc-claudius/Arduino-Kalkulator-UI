@@ -1,0 +1,16 @@
+# LaTeX Hilfsdateien ignorieren
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.out
+*.toc
+*.bbl
+*.blg
+# C++ Build-Dateien ignorieren
+PC_App/build/
+PC_App/.vscode/
+
+# PlatformIO Build-Dateien ignorieren
+Arduino_Firmware/.pio/
